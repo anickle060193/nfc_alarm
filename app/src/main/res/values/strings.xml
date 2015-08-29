@@ -1,0 +1,8 @@
+<resources>
+
+    <string name="app_name">NFC Alarm</string>
+
+    <string name="mime_type">application/com.adamnickle.nfcalarm</string>
+    <string name="title_activity_program_alarm">Program Alarm</string>
+
+</resources>
