@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="128"
+   viewBox="0 0 64 64"
+   width="128"
+   id="svg4740"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="ic_launcher.svg"
+   style="fill:#000000"
+   inkscape:export-filename="D:\Users\Adam\Desktop\nfc_alarm\Raw Resources\ic_launcher.png"
+   inkscape:export-xdpi="577.01001"
+   inkscape:export-ydpi="577.01001">
+  <metadata
+     id="metadata4750">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4748">
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter6020"
+       x="-0.039934837"
+       width="1.0798697"
+       y="-0.060147215"
+       height="1.1202944">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.50472656"
+         id="feGaussianBlur6022" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview4746"
+     showgrid="false"
+     inkscape:showpageshadow="false"
+     borderlayer="false"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-object-midpoints="false"
+     inkscape:zoom="1.2291667"
+     inkscape:cx="-77.677316"
+     inkscape:cy="123.30364"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4740"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:snap-center="false"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:object-paths="true"
+     inkscape:object-nodes="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-midpoints="true"
+     inkscape:snap-others="false"
+     inkscape:snap-nodes="true" />
+  <rect
+     style="fill:#ffffff;fill-opacity:0;stroke:none;stroke-width:0.91799998;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+     id="rect6031"
+     width="33.36631"
+     height="22.153612"
+     x="15.676209"
+     y="19.438334"
+     inkscape:export-xdpi="81.139999"
+     inkscape:export-ydpi="81.139999"
+     inkscape:export-filename="D:\Users\Adam\Desktop\nfc_alarm\app\src\main\res\mipmap-hdpi\ic_launcher.png" />
+  <g
+     id="g4140"
+     transform="matrix(1.21,0,0,1.21,-6.80589,-6.63915)"
+     inkscape:export-xdpi="81.139999"
+     inkscape:export-ydpi="81.139999"
+     inkscape:export-filename="D:\Users\Adam\Desktop\nfc_alarm\app\src\main\res\mipmap-hdpi\ic_launcher.png">
+    <path
+       inkscape:export-ydpi="690"
+       inkscape:export-xdpi="690"
+       inkscape:connector-curvature="0"
+       id="circle5445-7-9-6"
+       d="m 32.409,15.115 a 16.499566,16.5001 0 0 0 -16.5,16.5 16.499566,16.5001 0 0 0 16.5,16.5 16.499566,16.5001 0 0 0 16.5,-16.5 16.499566,16.5001 0 0 0 -16.5,-16.5 z"
+       style="fill:#3c6d68;fill-opacity:1;stroke:none;stroke-width:0.91799998;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0" />
+    <path
+       inkscape:export-ydpi="690"
+       inkscape:export-xdpi="690"
+       sodipodi:nodetypes="ccsscccccc"
+       style="fill:#457e78;fill-opacity:1;stroke:none;stroke-width:0.91799998;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 19.312977,39.215824 -1.193102,0.649736 c 0,0 1.128965,1.923902 2.621925,3.416861 1.492959,1.49296 3.270686,2.701135 5.244709,3.536055 1.974024,0.834919 4.144344,1.296584 6.422491,1.296524 9.112589,2.4e-4 16.499945,-7.387116 16.5,-16.5 -1.4e-5,-2.278221 -0.461734,-4.448597 -1.29669,-6.422657 -1.912547,-4.112353 -0.519805,-1.103648 -0.519805,-1.103648 l -1.185778,0.645681 z"
+       id="path9990"
+       inkscape:connector-curvature="0" />
+  </g>
+  <path
+     inkscape:connector-curvature="0"
+     id="path5886"
+     d="m 27.260422,21.345508 -4.600586,3.84961 1.290039,1.530273 4.589844,-3.850586 -1.279297,-1.529297 z m 10.799805,0 -1.290039,1.529297 4.599609,3.860352 1.290039,-1.530274 -4.599609,-3.859375 z m -5.400391,2.139649 c -4.969995,0 -9,4.03 -9,8.999999 0,4.97 4.020005,9 9,9 4.97,0 9,-4.03 9,-9 0,-4.969999 -4.03,-8.999999 -9,-8.999999 z m 0,2 c 3.87,0 7,3.129999 7,7 0,3.87 -3.13,6.999999 -7,6.999999 -3.869995,0 -7,-3.129999 -7,-6.999999 0,-3.870001 3.130005,-7 7,-7 z m -13.546875,0.119141 a 15.166107,15.166107 0 0 0 -1.620117,6.810546 15.166107,15.166107 0 0 0 2.120117,7.701172 l 1.38086,-0.799804 a 13.569674,13.569674 0 0 1 -1.904297,-6.901368 13.569674,13.569674 0 0 1 1.40039,-5.96582 l -1.376953,-0.844726 z m 27.09375,0.03027 -1.361328,0.832031 a 13.569674,13.569674 0 0 1 1.383789,5.948242 13.569674,13.569674 0 0 1 -1.892578,6.88379 l 1.379883,0.795897 a 15.166107,15.166107 0 0 0 2.109375,-7.679687 15.166107,15.166107 0 0 0 -1.619141,-6.780273 z m -24.352539,1.651367 a 11.973242,11.973242 0 0 0 -1.167969,5.128906 11.973242,11.973242 0 0 0 1.6875,6.10254 l 1.379883,-0.799806 a 10.376809,10.376809 0 0 1 -1.470703,-5.302734 10.376809,10.376809 0 0 1 0.939453,-4.289062 l -1.368164,-0.839843 z m 21.617188,0.02051 -1.369141,0.836914 a 10.376809,10.376809 0 0 1 0.933594,4.271485 10.376809,10.376809 0 0 1 -1.462891,5.289062 l 1.380859,0.796875 a 11.973242,11.973242 0 0 0 1.678711,-6.085937 11.973242,11.973242 0 0 0 -1.161132,-5.108399 z m -11.811524,0.178711 0,6 4.75,2.84961 0.75,-1.229492 -4,-2.370118 0,-5.249999 -1.5,0 z"
+     style="fill:#000000;fill-opacity:0.50581396;stroke:none;stroke-width:0.91799998;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;filter:url(#filter6020)"
+     inkscape:export-xdpi="81.139999"
+     inkscape:export-ydpi="81.139999"
+     inkscape:export-filename="D:\Users\Adam\Desktop\nfc_alarm\app\src\main\res\mipmap-hdpi\ic_launcher.png" />
+  <path
+     style="fill:#6fc322;fill-opacity:1;stroke:none;stroke-width:0.91799998;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+     d="m 26.960438,20.445316 -4.600586,3.84961 1.290039,1.530273 4.589844,-3.850586 z m 10.799805,0 -1.290039,1.529297 4.599609,3.860352 1.290039,-1.530274 z m -5.400391,2.139649 c -4.969995,0 -9,4.03 -9,8.999999 0,4.97 4.020005,9 9,9 4.97,0 9,-4.03 9,-9 0,-4.969999 -4.03,-8.999999 -9,-8.999999 z m 0,2 c 3.87,0 7,3.129999 7,7 0,3.87 -3.13,6.999999 -7,6.999999 -3.869995,0 -7,-3.129999 -7,-6.999999 0,-3.870001 3.130005,-7 7,-7 z m -13.546875,0.119141 c -1.063771,2.112772 -1.618589,4.445084 -1.620117,6.810546 0.0059,2.710386 0.737955,5.36968 2.120117,7.701172 l 1.384628,-0.75399 c -1.241116,-2.08851 -1.902539,-4.517735 -1.908065,-6.947182 0.0058,-2.069372 0.517508,-4.186931 1.433093,-6.042744 z m 27.09375,0.03027 -1.454768,0.792184 c 0.907238,1.851846 1.473925,3.925953 1.477229,5.988089 -0.0051,2.422392 -0.658596,4.799253 -1.892578,6.88379 l 1.379883,0.795897 c 1.374705,-2.326276 2.10294,-4.977589 2.109375,-7.679687 -0.0059,-2.355152 -0.560291,-4.676559 -1.619141,-6.780273 z M 21.619216,26.23259 c -0.7647,1.60192 -1.228678,3.506982 -1.232997,5.282059 0.0047,2.14875 0.63586,4.325646 1.73576,6.171552 l 1.42101,-0.773802 c -0.958522,-1.603011 -1.55601,-3.530026 -1.56009,-5.39775 0.0036,-1.480331 0.451053,-3.156736 1.066554,-4.503047 z m 21.449649,0.04713 -1.390621,0.757253 c 0.611039,1.341362 1.053292,3.003709 1.057585,4.477684 -0.0042,1.862352 -0.588982,3.779685 -1.542399,5.379488 l 1.393347,0.758919 c 1.093954,-1.841933 1.740698,-3.996112 1.745731,-6.138407 -0.0052,-1.767634 -0.504261,-3.638724 -1.263643,-5.234937 z m -11.709013,0.305249 0,6 4.75,2.84961 0.75,-1.229492 -4,-2.370118 0,-5.249999 z"
+     id="circle5445-7"
+     inkscape:connector-curvature="0"
+     inkscape:export-xdpi="81.139999"
+     inkscape:export-ydpi="81.139999"
+     sodipodi:nodetypes="ccccccccccssssssssssccccccccccccccccccccccccccccccccccc"
+     inkscape:export-filename="D:\Users\Adam\Desktop\nfc_alarm\app\src\main\res\mipmap-hdpi\ic_launcher.png" />
+  <path
+     style="fill:#000000;fill-opacity:0.11764706;stroke:none;stroke-width:0.91799998;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+     d="m 31.359852,32.584964 4.75,2.84961 0.75,-1.229492 -4,-2.370118 z"
+     id="rect6024"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccc"
+     inkscape:export-xdpi="81.139999"
+     inkscape:export-ydpi="81.139999"
+     inkscape:export-filename="D:\Users\Adam\Desktop\nfc_alarm\app\src\main\res\mipmap-hdpi\ic_launcher.png" />
+</svg>

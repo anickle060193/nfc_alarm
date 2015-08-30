@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="128"
+   viewBox="0 0 64 64"
+   width="128"
+   id="svg4740"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="nfc_notification_icon.svg"
+   style="fill:#000000"
+   inkscape:export-filename="D:\Users\Adam\Desktop\nfc_alarm\Raw Resources\ic_launcher.png"
+   inkscape:export-xdpi="577.01001"
+   inkscape:export-ydpi="577.01001">
+  <metadata
+     id="metadata4750">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4748" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview4746"
+     showgrid="false"
+     inkscape:showpageshadow="false"
+     borderlayer="false"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-object-midpoints="false"
+     inkscape:zoom="4.9166668"
+     inkscape:cx="28.976399"
+     inkscape:cy="58.037634"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4740"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:snap-center="false"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:object-paths="true"
+     inkscape:object-nodes="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-midpoints="true"
+     inkscape:snap-others="false"
+     inkscape:snap-nodes="true" />
+  <path
+     style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.91799998;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+     d="m 27.265523,19.933967 -4.600586,3.84961 1.290039,1.530273 4.589844,-3.850586 z m 10.799805,0 -1.290039,1.529297 4.599609,3.860352 1.290039,-1.530274 z m -5.400391,2.139649 c -4.969995,0 -9,4.03 -9,8.999999 0,4.97 4.020005,9 9,9 4.97,0 9,-4.03 9,-9 0,-4.969999 -4.03,-8.999999 -9,-8.999999 z m 0,2 c 3.87,0 7,3.129999 7,7 0,3.87 -3.13,6.999999 -7,6.999999 -3.869995,0 -7,-3.129999 -7,-6.999999 0,-3.870001 3.130005,-7 7,-7 z m -13.546875,0.119141 c -1.063771,2.112772 -1.618589,4.445084 -1.620117,6.810546 0.0059,2.710386 0.737955,5.36968 2.120117,7.701172 l 1.384628,-0.75399 c -1.241116,-2.08851 -1.902539,-4.517735 -1.908065,-6.947182 0.0058,-2.069372 0.517508,-4.186931 1.433093,-6.042744 z m 27.09375,0.03027 -1.454768,0.792184 c 0.907238,1.851846 1.473925,3.925953 1.477229,5.988089 -0.0051,2.422392 -0.658596,4.799253 -1.892578,6.88379 l 1.379883,0.795897 c 1.374705,-2.326276 2.10294,-4.977589 2.109375,-7.679687 -0.0059,-2.355152 -0.560291,-4.676559 -1.619141,-6.780273 z m -24.287511,1.498214 c -0.7647,1.60192 -1.228678,3.506982 -1.232997,5.282059 0.0047,2.14875 0.63586,4.325646 1.73576,6.171552 l 1.42101,-0.773802 c -0.958522,-1.603011 -1.55601,-3.530026 -1.56009,-5.39775 0.0036,-1.480331 0.451053,-3.156736 1.066554,-4.503047 z m 21.449649,0.04713 -1.390621,0.757253 c 0.611039,1.341362 1.053292,3.003709 1.057585,4.477684 -0.0042,1.862352 -0.588982,3.779685 -1.542399,5.379488 l 1.393347,0.758919 c 1.093954,-1.841933 1.740698,-3.996112 1.745731,-6.138407 -0.0052,-1.767634 -0.504261,-3.638724 -1.263643,-5.234937 z m -11.709013,0.305249 0,6 4.75,2.84961 0.75,-1.229492 -4,-2.370118 0,-5.249999 z"
+     id="circle5445-7"
+     inkscape:connector-curvature="0"
+     inkscape:export-xdpi="106.81"
+     inkscape:export-ydpi="106.81"
+     sodipodi:nodetypes="ccccccccccssssssssssccccccccccccccccccccccccccccccccccc"
+     inkscape:export-filename="D:\Users\Adam\Desktop\nfc_alarm\app\src\main\res\drawable-hdpi\ic_notification.png" />
+</svg>
