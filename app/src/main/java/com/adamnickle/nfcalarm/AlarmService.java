@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.v7.app.NotificationCompat;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,12 @@ public class AlarmService extends Service
     @Override
     public int onStartCommand( Intent intent, int flags, int startId )
     {
-        mAlarm = Alarm.getAlarm( this );
+        final String alarmId = intent.getStringExtra( Alarm.EXTRA_ALARM );
+        if( alarmId == null )
+        {
+            throw new InvalidParameterException();
+        }
+        mAlarm = Alarm.getAlarm( this, alarmId );
         startAnnoying();
 
         return Service.START_STICKY;

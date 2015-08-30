@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.adamnickle.nfcalarm" >
 
     <uses-permission android:name="android.permission.NFC" />
@@ -12,22 +11,12 @@
         android:required="true" />
 
     <application
+        android:name=".NfcAlarm"
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:fullBackupContent="true"
-        android:name=".NfcAlarm">
-
-        <activity
-            android:name=".AlarmActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleInstance">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        android:theme="@style/AppTheme" >
 
         <receiver android:name=".AlarmReceiver" >
             <intent-filter>
@@ -39,21 +28,26 @@
         </service>
 
         <activity
-            android:name=".ProgramAlarmActivity"
-            android:label="@string/title_activity_program_alarm"
-            android:screenOrientation="portrait" >
+            android:name=".NfcDetectorActivity"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:stateNotNeeded="true"
+            android:theme="@android:style/Theme.NoDisplay" >
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="@string/mime_type" />
+            </intent-filter>
         </activity>
 
         <activity
-            android:name=".NfcDetectorActivity"
-            android:noHistory="true"
-            android:stateNotNeeded="true"
-            android:excludeFromRecents="true"
-            android:theme="@android:style/Theme.NoDisplay">
+            android:name=".AlarmsActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="@string/mime_type" />
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 

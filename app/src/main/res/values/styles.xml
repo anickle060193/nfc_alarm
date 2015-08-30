@@ -24,8 +24,8 @@
     </style>
 
     <style name="DayCheckbox" parent="android:Widget.Material.Light.CompoundButton.CheckBox">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
         <item name="android:background">@drawable/day_checkbox_background</item>
         <item name="android:button">@null</item>
         <item name="android:gravity">center</item>

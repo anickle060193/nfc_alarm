@@ -11,6 +11,7 @@ import android.nfc.tech.Ndef;
 import android.os.Bundle;
 
 import java.io.IOException;
+import java.util.Set;
 
 public class NfcDetectorActivity extends Activity
 {
@@ -21,9 +22,9 @@ public class NfcDetectorActivity extends Activity
 
         if( AlarmService.isAnnoying() )
         {
-            final Alarm alarm = Alarm.getAlarm( this );
+            final Alarm alarm = getMatchingAlarm();
 
-            if( matchesAlarmId( alarm ) )
+            if( alarm != null )
             {
                 alarm.dismissAlarm( this );
                 if( alarm.isEnabled() )
@@ -34,25 +35,25 @@ public class NfcDetectorActivity extends Activity
         }
         else
         {
-            final Intent intent = new Intent( this, AlarmActivity.class );
-            intent.setFlags( Intent.FLAG_ACTIVITY_NO_ANIMATION );
+            final Intent intent = new Intent( this, AlarmsActivity.class )
+                    .setFlags( Intent.FLAG_ACTIVITY_NO_ANIMATION );
             startActivity( intent );
         }
         finish();
     }
 
-    private boolean matchesAlarmId( final Alarm alarm )
+    private Alarm getMatchingAlarm()
     {
         final Tag tag = getIntent().getParcelableExtra( NfcAdapter.EXTRA_TAG );
         if( tag == null )
         {
-            return false;
+            return null;
         }
 
         final Ndef ndef = Ndef.get( tag );
         if( ndef == null )
         {
-            return false;
+            return null;
         }
 
         try
@@ -61,19 +62,19 @@ public class NfcDetectorActivity extends Activity
             final NdefMessage message = ndef.getNdefMessage();
             if( message == null )
             {
-                return false;
+                return null;
             }
 
-            final String alarmID = alarm.getID();
+            final Set<String> alarmIds = Alarm.getAlarmIds( this );
             for( NdefRecord record : message.getRecords() )
             {
                 final String mimeType = record.toMimeType();
                 if( mimeType != null && mimeType.equals( getString( R.string.mime_type ) ) )
                 {
                     final String id = new String( record.getPayload(), "UTF-8" );
-                    if( alarmID.equals( id ) )
+                    if( alarmIds.contains( id ) )
                     {
-                        return true;
+                        return Alarm.getAlarm( this, id );
                     }
                 }
             }
@@ -93,6 +94,6 @@ public class NfcDetectorActivity extends Activity
                 e.printStackTrace();
             }
         }
-        return false;
+        return null;
     }
 }

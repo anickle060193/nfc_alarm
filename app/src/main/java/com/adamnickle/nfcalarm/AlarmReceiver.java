@@ -14,10 +14,13 @@ public class AlarmReceiver extends BroadcastReceiver
         final String action = intent.getAction();
         if( Intent.ACTION_BOOT_COMPLETED.equals( action ) )
         {
-            final Alarm alarm = Alarm.getAlarm( context );
-            if( alarm.isEnabled() )
+            final Alarm[] alarms = Alarm.getAlarms( context );
+            for( Alarm alarm : alarms )
             {
-                alarm.activateAlarm( context );
+                if( alarm.isEnabled() )
+                {
+                    alarm.activateAlarm( context );
+                }
             }
         }
         else if( ACTION_ALARM.equals( action ) )

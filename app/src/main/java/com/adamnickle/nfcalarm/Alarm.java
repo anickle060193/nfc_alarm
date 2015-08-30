@@ -7,9 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
 
+import java.io.File;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -17,10 +21,16 @@ import java.util.UUID;
  */
 public final class Alarm
 {
+    public static final String EXTRA_ALARM = BuildConfig.APPLICATION_ID + ".extra.alarm";
+
+    private static final Object LOCK = new Object();
+
     private static final int ALARM_REQUEST_CODE = 1001;
     private static final int SHOW_ALARM_REQUEST_CODE = 1002;
 
-    private static final String PREF_HAS_ALARM = "pref_has_alarm";
+    private static final String PREF_ALL_ALARMS = "pref_all_alarms";
+
+    private static final String PREF_SAVED_TO_ALL = "pref_alarm_saved_to_all";
     private static final String PREF_ALARM_TIME_HOUR = "pref_alarm_time_hour";
     private static final String PREF_ALARM_TIME_MINUTE = "pref_alarm_time_minute";
     private static final String PREF_ALARM_ENABLED = "pref_alarm_enabled";
@@ -28,6 +38,7 @@ public final class Alarm
     private static final String PREF_ALARM_REPEATS = "pref_alarm_repeats";
     private static final String PREF_ALARM_DAYS = "pref_alarm_days";
     private static final String PREF_ALARM_SOUND = "pref_alarm_sound";
+    private static final String PREF_ALARM_VIBRATES = "pref_alarm_vibrates";
 
     public static final int SUNDAY = 0;
     public static final int MONDAY = 1;
@@ -39,6 +50,7 @@ public final class Alarm
 
     private static final int[] CALENDAR_TO_ALARM = { 0, SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY };
 
+    private boolean mSavedToAll;
     private int mHour;
     private int mMinute;
     private boolean mEnabled = false;
@@ -46,15 +58,19 @@ public final class Alarm
     private int mDays;
     private String mId;
     private Uri mAlarmSound;
+    private boolean mVibrates;
 
     private Alarm()
     {
+        this.mSavedToAll = false;
         this.mHour = 0;
         this.mMinute = 0;
         this.mEnabled = false;
+        this.mRepeats = false;
         this.mDays = 0;
         this.mId = UUID.randomUUID().toString();
         this.mAlarmSound = Settings.System.DEFAULT_ALARM_ALERT_URI;
+        this.mVibrates = true;
     }
 
     public void setTime( int hourOfDay, int minute )
@@ -74,7 +90,7 @@ public final class Alarm
         {
             alarmTime.add( Calendar.DATE, 1 );
         }
-        if( mRepeats )
+        if( getRepeats() )
         {
             while( !getDay( CALENDAR_TO_ALARM[ alarmTime.get( Calendar.DAY_OF_WEEK ) ] ) )
             {
@@ -151,106 +167,205 @@ public final class Alarm
         return mAlarmSound;
     }
 
-    private static SharedPreferences getSharedPreferences( Context context )
+    public void setVibrates( boolean vibrates )
     {
-        return context.getSharedPreferences( BuildConfig.APPLICATION_ID + ".alarm_pref", Context.MODE_PRIVATE );
+        mVibrates = vibrates;
     }
 
-    public static Alarm getAlarm( Context context )
+    public boolean getVibrates()
     {
-        final SharedPreferences prefs = Alarm.getSharedPreferences( context );
+        return mVibrates;
+    }
 
-        if( prefs.getBoolean( PREF_HAS_ALARM, false ) )
+    private static String getPreferenceFileName( String id )
+    {
+        return BuildConfig.APPLICATION_ID + "." + id;
+    }
+
+    private static SharedPreferences getSharedPreferences( Context context, String id )
+    {
+        return context.getSharedPreferences( Alarm.getPreferenceFileName( id ), Context.MODE_PRIVATE );
+    }
+
+    private static SharedPreferences getAllAlarmPreferences( Context context )
+    {
+        return Alarm.getSharedPreferences( context, "ALL_ALARMS" );
+    }
+
+    public static Alarm[] getAlarms( Context context )
+    {
+        final Set<String> alarmIdsSet = Alarm.getAlarmIds( context );
+        final String[] alarmIds = alarmIdsSet.toArray( new String[ alarmIdsSet.size() ] );
+        final Alarm[] alarms = new Alarm[ alarmIds.length ];
+        for( int i = 0; i < alarms.length; i++ )
         {
-            final Alarm alarm = new Alarm();
-            alarm.mHour = prefs.getInt( PREF_ALARM_TIME_HOUR, 0 );
-            alarm.mMinute = prefs.getInt( PREF_ALARM_TIME_MINUTE, 0 );
-            alarm.mEnabled = prefs.getBoolean( PREF_ALARM_ENABLED, false );
-            alarm.mRepeats = prefs.getBoolean( PREF_ALARM_REPEATS, false );
-            alarm.mDays = prefs.getInt( PREF_ALARM_DAYS, 0 );
-            alarm.mId = prefs.getString( PREF_ALARM_ID, alarm.mId );
-            final String uriString = prefs.getString( PREF_ALARM_SOUND, null );
-            if( uriString != null )
+            alarms[ i ] = Alarm.getAlarm( context, alarmIds[ i ] );
+        }
+        return alarms;
+    }
+
+    public static Set<String> getAlarmIds( Context context )
+    {
+        final SharedPreferences prefs = Alarm.getAllAlarmPreferences( context );
+        final Set<String> emptySet = Collections.emptySet();
+        return prefs.getStringSet( PREF_ALL_ALARMS, emptySet );
+    }
+
+    public static Alarm getAlarm( Context context, @NonNull String id )
+    {
+        final SharedPreferences prefs = Alarm.getSharedPreferences( context, id );
+
+        final Alarm alarm = new Alarm();
+        alarm.mSavedToAll = prefs.getBoolean( PREF_SAVED_TO_ALL, false );
+        alarm.mHour = prefs.getInt( PREF_ALARM_TIME_HOUR, 0 );
+        alarm.mMinute = prefs.getInt( PREF_ALARM_TIME_MINUTE, 0 );
+        alarm.mEnabled = prefs.getBoolean( PREF_ALARM_ENABLED, false );
+        alarm.mRepeats = prefs.getBoolean( PREF_ALARM_REPEATS, false );
+        alarm.mDays = prefs.getInt( PREF_ALARM_DAYS, 0 );
+        alarm.mId = prefs.getString( PREF_ALARM_ID, id );
+        final String uriString = prefs.getString( PREF_ALARM_SOUND, null );
+        if( uriString != null )
+        {
+            alarm.mAlarmSound = Uri.parse( uriString );
+        }
+        alarm.mVibrates = prefs.getBoolean( PREF_ALARM_VIBRATES, true );
+        return alarm;
+    }
+
+    public static Alarm createNewAlarm( Context context )
+    {
+        return new Alarm();
+    }
+
+    public void deleteAlarm( Context context )
+    {
+        synchronized( LOCK )
+        {
+            final Set<String> alarmIdsSet = Alarm.getAlarmIds( context );
+            alarmIdsSet.remove( getID() );
+            Alarm.getAllAlarmPreferences( context )
+                    .edit()
+                    .putStringSet( PREF_ALL_ALARMS, alarmIdsSet )
+                    .commit();
+
+            Alarm.getSharedPreferences( context, getID() )
+                    .edit().clear().commit();
+
+            final File dir = new File( context.getFilesDir().getParent() + "/shared_prefs/" );
+            final String filename = Alarm.getPreferenceFileName( getID() ) + ".xml";
+            final boolean deleted = new File( dir, filename ).delete();
+        }
+    }
+
+    public void saveAlarm( Context context )
+    {
+        synchronized( LOCK )
+        {
+            if( !mSavedToAll )
             {
-                alarm.mAlarmSound = Uri.parse( uriString );
+                final Set<String> alarmIdsSet = Alarm.getAlarmIds( context );
+                alarmIdsSet.add( getID() );
+                mSavedToAll = Alarm.getAllAlarmPreferences( context )
+                        .edit()
+                        .putStringSet( PREF_ALL_ALARMS, alarmIdsSet )
+                        .commit();
             }
-            return alarm;
-        }
-        else
-        {
-            return new Alarm();
-        }
-    }
 
-    private void saveAlarm( Context context )
-    {
-        Alarm.getSharedPreferences( context )
-                .edit()
-                .putBoolean( PREF_HAS_ALARM, true )
-                .putInt( PREF_ALARM_TIME_HOUR, mHour )
-                .putInt( PREF_ALARM_TIME_MINUTE, mMinute )
-                .putBoolean( PREF_ALARM_ENABLED, mEnabled )
-                .putBoolean( PREF_ALARM_REPEATS, mRepeats )
-                .putInt( PREF_ALARM_DAYS, mDays )
-                .putString( PREF_ALARM_ID, mId )
-                .putString( PREF_ALARM_SOUND, mAlarmSound.toString() )
-                .commit();
+            Alarm.getSharedPreferences( context, getID() )
+                    .edit()
+                    .putBoolean( PREF_SAVED_TO_ALL, mSavedToAll )
+                    .putInt( PREF_ALARM_TIME_HOUR, mHour )
+                    .putInt( PREF_ALARM_TIME_MINUTE, mMinute )
+                    .putBoolean( PREF_ALARM_ENABLED, mEnabled )
+                    .putBoolean( PREF_ALARM_REPEATS, mRepeats )
+                    .putInt( PREF_ALARM_DAYS, mDays )
+                    .putString( PREF_ALARM_ID, mId )
+                    .putString( PREF_ALARM_SOUND, mAlarmSound.toString() )
+                    .putBoolean( PREF_ALARM_VIBRATES, mVibrates )
+                    .commit();
+        }
     }
 
     private PendingIntent createAlarmPendingIntent( Context context )
     {
         final Intent intent = new Intent( context, AlarmReceiver.class );
         intent.setAction( AlarmReceiver.ACTION_ALARM );
+        intent.putExtra( Alarm.EXTRA_ALARM, getID() );
         return PendingIntent.getBroadcast( context, Alarm.ALARM_REQUEST_CODE, intent, 0 );
     }
 
     public PendingIntent createShowPendingIntent( Context context )
     {
-        final Intent intent = new Intent( context, AlarmActivity.class );
+        final Intent intent = new Intent( context, AlarmsActivity.class );
         intent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+        intent.putExtra( Alarm.EXTRA_ALARM, getID() );
         return PendingIntent.getActivity( context, SHOW_ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT );
     }
 
     public void activateAlarm( Context context )
     {
-        if( !mEnabled )
+        synchronized( LOCK )
         {
-            mEnabled = true;
+            if( !mEnabled )
+            {
+                mEnabled = true;
+            }
+            this.saveAlarm( context );
+
+            final PendingIntent alarmPendingIntent = createAlarmPendingIntent( context );
+            final PendingIntent showPendingIntent = createShowPendingIntent( context );
+
+            final AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo( getNextAlarmTime().getTimeInMillis(), showPendingIntent );
+
+            final AlarmManager manager = (AlarmManager)context.getSystemService( Context.ALARM_SERVICE );
+            manager.setAlarmClock( info, alarmPendingIntent );
         }
-        this.saveAlarm( context );
-
-        final PendingIntent alarmPendingIntent = createAlarmPendingIntent( context );
-        final PendingIntent showPendingIntent = createShowPendingIntent( context );
-
-        final AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo( getNextAlarmTime().getTimeInMillis(), showPendingIntent );
-
-        final AlarmManager manager = (AlarmManager)context.getSystemService( Context.ALARM_SERVICE );
-        manager.setAlarmClock( info, alarmPendingIntent );
     }
 
     public void dismissAlarm( Context context )
     {
-        this.cancelAlarm( context );
-
-        if( this.getRepeats() )
+        synchronized( LOCK )
         {
-            this.activateAlarm( context );
+            this.cancelAlarm( context );
+
+            if( this.getRepeats() )
+            {
+                this.activateAlarm( context );
+            }
         }
     }
 
     public void cancelAlarm( Context context )
     {
-        if( mEnabled )
+        synchronized( LOCK )
         {
-            mEnabled = false;
+            if( mEnabled )
+            {
+                mEnabled = false;
+            }
+            this.saveAlarm( context );
+
+            final PendingIntent pendingIntent = createAlarmPendingIntent( context );
+
+            final AlarmManager manager = (AlarmManager)context.getSystemService( Context.ALARM_SERVICE );
+            manager.cancel( pendingIntent );
+
+            AlarmService.stopAlarm( context );
         }
-        this.saveAlarm( context );
+    }
 
-        final PendingIntent pendingIntent = createAlarmPendingIntent( context );
+    @Override
+    public boolean equals( Object o )
+    {
+        return this == o
+            || ( o instanceof Alarm
+              && mId.equals( ( (Alarm)o ).mId ) );
 
-        final AlarmManager manager = (AlarmManager)context.getSystemService( Context.ALARM_SERVICE );
-        manager.cancel( pendingIntent );
+    }
 
-        AlarmService.stopAlarm( context );
+    @Override
+    public int hashCode()
+    {
+        return mId.hashCode();
     }
 }

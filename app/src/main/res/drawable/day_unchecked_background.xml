@@ -7,8 +7,4 @@
         android:width="1dp"
         android:color="@color/primary_dark" />
 
-    <size
-        android:height="@dimen/day_checkbox_size"
-        android:width="@dimen/day_checkbox_size" />
-
 </shape>
