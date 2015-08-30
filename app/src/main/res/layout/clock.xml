@@ -9,6 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="100sp"
+        android:textColor="@color/accent_dark"
         android:text="10:30"/>
 
     <LinearLayout
@@ -23,6 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="40sp"
+            android:textColor="@color/accent_dark"
             android:text="AM"
             android:layout_marginBottom="-5dp"/>
 
@@ -31,6 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="40sp"
+            android:textColor="@color/accent_dark"
             android:text="PM"
             android:layout_marginTop="-5dp"/>
 

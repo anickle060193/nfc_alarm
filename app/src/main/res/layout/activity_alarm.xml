@@ -1,7 +1,35 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          android:id="@+id/fragment"
-          android:name="com.adamnickle.nfcalarm.AlarmActivityFragment"
-          tools:layout="@layout/fragment_alarm"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"/>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context="com.adamnickle.nfcalarm.AlarmActivity">
+
+    <include
+        android:id="@+id/alarmClock"
+        layout="@layout/clock" />
+
+    <Button
+        android:id="@+id/setAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="150dp"
+        android:text="Set Alarm"/>
+
+    <Button
+        android:id="@+id/createAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="150dp"
+        android:text="Create Alarm"/>
+
+    <Button
+        android:id="@+id/clearAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="150dp"
+        android:text="Clear Alarm"/>
+
+</LinearLayout>

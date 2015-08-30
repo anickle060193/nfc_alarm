@@ -1,19 +1,37 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="android:Theme.Material.Light.DarkActionBar">
+        <item name="android:colorPrimary">@color/accent</item>
+        <item name="android:colorPrimaryDark">@color/accent_dark</item>
+        <item name="android:colorAccent">@color/accent</item>
+
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
         <item name="android:buttonStyle">@style/RobotoButtonStyle</item>
-
-        <item name="buttonStyle">@style/RobotoButtonStyle</item>
+        <item name="android:checkboxStyle">@style/RobotoCheckboxStyle</item>
     </style>
 
-    <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
+    <style name="RobotoTextViewStyle" parent="android:Widget.Material.Light.TextView">
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
-    <style name="RobotoButtonStyle" parent="android:Widget.Holo.Button">
+    <style name="RobotoButtonStyle" parent="android:Widget.Material.Button">
         <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="RobotoCheckboxStyle" parent="android:Widget.Material.CompoundButton.CheckBox">
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="DayCheckbox" parent="android:Widget.Material.Light.CompoundButton.CheckBox">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/day_checkbox_background</item>
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/day_checkbox_text_color</item>
+        <item name="android:layout_margin">4dp</item>
     </style>
 
 </resources>

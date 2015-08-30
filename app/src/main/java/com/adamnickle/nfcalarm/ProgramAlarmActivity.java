@@ -1,31 +1,290 @@
 package com.adamnickle.nfcalarm;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.nfc.FormatException;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.Ndef;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
-public class ProgramAlarmActivity extends AppCompatActivity
+import java.io.IOException;
+import java.util.Calendar;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class ProgramAlarmActivity extends Activity
 {
-    private ProgramAlarmActivityFragment mFragment;
+    private static final int REQUEST_NDEF_DISCOVERED = 1001;
+
+    @Bind( R.id.currentTime ) View mCurrentClock;
+    @Bind( R.id.alarmTime ) View mAlarmClock;
+    @Bind( R.id.tagProgrammingStatus ) TextView mTagProgrammingStatus;
+    @Bind( R.id.repeat ) CheckBox mRepeat;
+    @Bind( R.id.days ) View mDays;
+    @Bind( { R.id.sunday, R.id.monday, R.id.tuesday, R.id.wednesday, R.id.thursday, R.id.friday, R.id.saturday } )
+    CheckBox[] mDayCheckboxes;
+    @Bind( R.id.done ) Button mDone;
+
+    private Alarm mNewAlarm;
+
+    private boolean mTagProgrammed;
+
+    private PendingIntent mNdefDiscoveredPendingIntent;
+    private IntentFilter[] mNdefIntentFilters;
+    private String[][] mTechList;
+    private NfcAdapter mNfcAdapter;
 
     @Override
-    protected void onCreate( Bundle savedInstanceState )
+    public void onCreate( Bundle savedInstanceState )
     {
         super.onCreate( savedInstanceState );
+        setResult( Activity.RESULT_CANCELED );
         setContentView( R.layout.activity_program_alarm );
+        ButterKnife.bind( this );
 
-        mFragment = (ProgramAlarmActivityFragment)getSupportFragmentManager()
-                .findFragmentById( R.id.programAlarmFragment );
+        mNewAlarm = Alarm.getAlarm( this );
+        mTagProgrammed = false;
+
+        final Handler handler = new Handler();
+        handler.post( new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                updateCurrentTime();
+                handler.postDelayed( this, 100 );
+            }
+        } );
+
+        for( int i = 0; i < mDayCheckboxes.length; i++ )
+        {
+            mDayCheckboxes[ i ].setTag( i );
+        }
+
+        updateAlarmTime();
+        updateDaysContainer();
+
+        final Intent nfcIntent = new Intent( this, ProgramAlarmActivity.class )
+                .addFlags( Intent.FLAG_ACTIVITY_SINGLE_TOP );
+        mNdefDiscoveredPendingIntent = PendingIntent.getActivity( this, REQUEST_NDEF_DISCOVERED, nfcIntent, 0 );
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction( NfcAdapter.ACTION_NDEF_DISCOVERED );
+        filter.addAction( NfcAdapter.ACTION_TECH_DISCOVERED );
+        try
+        {
+            filter.addDataType( "*/*" );
+        }
+        catch( IntentFilter.MalformedMimeTypeException e )
+        {
+            e.printStackTrace();
+        }
+        mNdefIntentFilters = new IntentFilter[]{ filter };
+        mTechList = new String[][]{ { Ndef.class.getName() } };
+
+        mNfcAdapter = NfcAdapter.getDefaultAdapter( this );
     }
 
     @Override
-    protected void onNewIntent( Intent intent )
+    public void onResume()
     {
-        super.onNewIntent( intent );
+        super.onResume();
 
-        if( mFragment != null )
+        mNfcAdapter.enableForegroundDispatch( this, mNdefDiscoveredPendingIntent, mNdefIntentFilters, mTechList );
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        mNfcAdapter.disableForegroundDispatch( this );
+    }
+
+    @Override
+    public void onNewIntent( Intent intent )
+    {
+        if( intent != null )
         {
-            mFragment.onNewIntent( intent );
+            final Tag tag = intent.getParcelableExtra( NfcAdapter.EXTRA_TAG );
+            if( tag != null )
+            {
+                mTagProgrammed = programTag( tag );
+                if( mTagProgrammed )
+                {
+                    mTagProgrammingStatus.setText( "NFC tag has been programmed." );
+                }
+                else
+                {
+                    mTagProgrammingStatus.setText( "Scanning for NFC tag..." );
+                }
+                mDone.setEnabled( mTagProgrammed );
+            }
         }
+    }
+
+    private void updateCurrentTime()
+    {
+        ClockViewHelper.setTime( mCurrentClock, Calendar.getInstance() );
+    }
+
+    private void updateAlarmTime()
+    {
+        ClockViewHelper.setTime( mAlarmClock, mNewAlarm.getNextAlarmTime() );
+    }
+
+    private void updateDaysContainer()
+    {
+        if( mNewAlarm.getRepeats() )
+        {
+            mRepeat.setChecked( true );
+            for( int i = 0; i < mDayCheckboxes.length; i++ )
+            {
+                mDayCheckboxes[ i ].setChecked( mNewAlarm.getDay( i ) );
+            }
+            mDays.setVisibility( View.VISIBLE );
+        }
+        else
+        {
+            mRepeat.setChecked( false );
+            mDays.setVisibility( View.GONE );
+        }
+    }
+
+    @OnClick( R.id.alarmTime )
+    void onAlarmTimeClick()
+    {
+        final Calendar time = mNewAlarm.getNextAlarmTime();
+        final int hourOfDay = time.get( Calendar.HOUR_OF_DAY );
+        final int minute = time.get( Calendar.MINUTE );
+        new TimePickerDialog( this, new TimePickerDialog.OnTimeSetListener()
+        {
+            @Override
+            public void onTimeSet( TimePicker view, int hourOfDay, int minute )
+            {
+                mNewAlarm.setTime( hourOfDay, minute );
+                updateAlarmTime();
+            }
+        }, hourOfDay, minute, false ).show();
+    }
+
+    @OnClick( R.id.cancel )
+    void onCancelClick()
+    {
+        this.finish();
+    }
+
+    @OnClick( R.id.done )
+    void onDoneClick()
+    {
+        mNewAlarm.activateAlarm( this );
+        this.setResult( Activity.RESULT_OK );
+        this.finish();
+    }
+
+    @OnClick( R.id.repeat )
+    void onRepeatCheckedChanged( View view )
+    {
+        final boolean checked = ( (CheckBox)view ).isChecked();
+        mNewAlarm.setRepeat( checked );
+        updateDaysContainer();
+    }
+
+    @OnClick( { R.id.sunday, R.id.monday, R.id.tuesday, R.id.wednesday, R.id.thursday, R.id.friday, R.id.saturday } )
+    void onDayCheckedChanged( View view )
+    {
+        final CheckBox dayCheckbox = (CheckBox)view;
+        final boolean checked = dayCheckbox.isChecked();
+        mNewAlarm.setDay( (int)dayCheckbox.getTag(), checked );
+        updateDaysContainer();
+    }
+
+    private boolean programTag( final Tag tag )
+    {
+        final Ndef ndef = Ndef.get( tag );
+        if( ndef == null )
+        {
+            new AlertDialog.Builder( this )
+                    .setTitle( "Incompatible NFC Tag" )
+                    .setMessage( "The NFC tag does not support NDEF format. Try again with a different tag." )
+                    .setPositiveButton( "OK", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick( DialogInterface dialog, int which )
+                        {
+                            dialog.dismiss();
+                        }
+                    } ).show();
+            return false;
+        }
+        try
+        {
+            ndef.connect();
+            final byte[] id = mNewAlarm.getID().getBytes( "UTF-8" );
+            final NdefRecord idRecord = NdefRecord.createMime( getString( R.string.mime_type ), id );
+            final NdefRecord appRecord = NdefRecord.createApplicationRecord( BuildConfig.APPLICATION_ID );
+            final NdefMessage appMessage = new NdefMessage( idRecord, appRecord );
+            ndef.writeNdefMessage( appMessage );
+            return true;
+        }
+        catch( IOException ex )
+        {
+            ex.printStackTrace();
+
+            new AlertDialog.Builder( this )
+                    .setTitle( "NFC Tag Connection Error" )
+                    .setMessage( "Could not connect to NFC tag. Try again." )
+                    .setPositiveButton( "OK", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick( DialogInterface dialog, int which )
+                        {
+                            dialog.dismiss();
+                        }
+                    } ).show();
+        }
+        catch( FormatException ex )
+        {
+            ex.printStackTrace();
+
+            new AlertDialog.Builder( this )
+                    .setTitle( "NFC Tag Programming Error" )
+                    .setMessage( "An error occurred while programming the NFC tag. Try again." )
+                    .setPositiveButton( "OK", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick( DialogInterface dialog, int which )
+                        {
+                            dialog.dismiss();
+                        }
+                    } ).show();
+        }
+        finally
+        {
+            try
+            {
+                ndef.close();
+            }
+            catch( IOException e )
+            {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

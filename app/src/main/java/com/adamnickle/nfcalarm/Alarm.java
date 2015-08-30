@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.text.format.DateUtils;
 
 import java.util.Calendar;
 import java.util.UUID;
@@ -18,41 +19,74 @@ public final class Alarm
     private static final int SHOW_ALARM_REQUEST_CODE = 1002;
 
     private static final String PREF_HAS_ALARM = "pref_has_alarm";
-    private static final String PREF_ALARM_TIME = "pref_alarm_time";
+    private static final String PREF_ALARM_TIME_HOUR = "pref_alarm_time_hour";
+    private static final String PREF_ALARM_TIME_MINUTE = "pref_alarm_time_minute";
     private static final String PREF_ALARM_ENABLED = "pref_alarm_enabled";
     private static final String PREF_ALARM_ID = "pref_alarm_id";
+    private static final String PREF_ALARM_REPEATS = "pref_alarm_repeats";
+    private static final String PREF_ALARM_DAYS = "pref_alarm_days";
 
-    private Calendar Time;
-    private boolean Enabled = false;
+    public static final int SUNDAY = 0;
+    public static final int MONDAY = 1;
+    public static final int TUESDAY = 2;
+    public static final int WEDNESDAY = 3;
+    public static final int THURSDAY = 4;
+    public static final int FRIDAY = 5;
+    public static final int SATURDAY = 6;
+
+    private static final int[] CALENDAR_TO_ALARM = { 0, SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY };
+
+    private int mHour;
+    private int mMinute;
+    private boolean mEnabled = false;
+    private boolean mRepeats;
+    private int mDays;
     private String mId;
 
     private Alarm()
     {
-        this.Time = Calendar.getInstance();
-        this.Enabled = false;
-        mId = UUID.randomUUID().toString();
+        this.mHour = 0;
+        this.mMinute = 0;
+        this.mEnabled = false;
+        this.mDays = 0;
+        this.mId = UUID.randomUUID().toString();
     }
 
     public void setTime( int hourOfDay, int minute )
     {
-        Time.set( Calendar.HOUR_OF_DAY, hourOfDay );
-        Time.set( Calendar.MINUTE, minute );
-        this.updateToFuture();
+        this.mHour = hourOfDay;
+        this.mMinute = minute;
     }
 
-    public Calendar getTime()
+    public Calendar getNextAlarmTime()
     {
-        return (Calendar)Time.clone();
+        final Calendar now = Calendar.getInstance();
+        final Calendar alarmTime = (Calendar)now.clone();
+        alarmTime.set( Calendar.HOUR_OF_DAY, mHour );
+        alarmTime.set( Calendar.MINUTE, mMinute );
+        alarmTime.set( Calendar.SECOND, 0 );
+        if( alarmTime.before( now ) )
+        {
+            alarmTime.add( Calendar.DATE, 1 );
+        }
+        if( mRepeats )
+        {
+            while( !getDay( CALENDAR_TO_ALARM[ alarmTime.get( Calendar.DAY_OF_WEEK ) ] ) )
+            {
+                alarmTime.add( Calendar.DATE, 1 );
+            }
+        }
+        return alarmTime;
     }
 
     public boolean isEnabled()
     {
-        return Enabled;
+        return mEnabled;
     }
 
     public void setEnabled( boolean enabled )
     {
-        Enabled = enabled;
+        mEnabled = enabled;
     }
 
     public String getID()
@@ -60,14 +94,51 @@ public final class Alarm
         return mId;
     }
 
+    public void setRepeat( boolean repeat )
+    {
+        mRepeats = repeat;
+        setDay( SUNDAY, mRepeats );
+        setDay( MONDAY, mRepeats );
+        setDay( TUESDAY, mRepeats );
+        setDay( WEDNESDAY, mRepeats );
+        setDay( THURSDAY, mRepeats );
+        setDay( FRIDAY, mRepeats );
+        setDay( SATURDAY, mRepeats );
+    }
+
+    public boolean getRepeats()
+    {
+        return mRepeats && mDays != 0;
+    }
+
+    public void setDay( int day, boolean enabled )
+    {
+        if( enabled )
+        {
+            mDays |= ( 1 << day );
+        }
+        else
+        {
+            mDays &= ~( 1 << day );
+        }
+    }
+
+    public boolean getDay( int day )
+    {
+        return ( mDays & ( 1 << day ) ) != 0;
+    }
+
+    public String getAlarmActivationString()
+    {
+        final long now = System.currentTimeMillis();
+        final long alarm = getNextAlarmTime().getTimeInMillis();
+        final String alarmString = DateUtils.getRelativeTimeSpanString( alarm, now, DateUtils.SECOND_IN_MILLIS ).toString();
+        return "Alarm to sound " + alarmString;
+    }
+
     private static SharedPreferences getSharedPreferences( Context context )
     {
         return context.getSharedPreferences( BuildConfig.APPLICATION_ID + ".alarm_pref", Context.MODE_PRIVATE );
-    }
-
-    public static Alarm getInstance()
-    {
-        return new Alarm();
     }
 
     public static Alarm getAlarm( Context context )
@@ -77,24 +148,17 @@ public final class Alarm
         if( prefs.getBoolean( PREF_HAS_ALARM, false ) )
         {
             final Alarm alarm = new Alarm();
-            alarm.Time.setTimeInMillis( prefs.getLong( PREF_ALARM_TIME, System.currentTimeMillis() ) );
-            alarm.Enabled = prefs.getBoolean( PREF_ALARM_ENABLED, false );
+            alarm.mHour = prefs.getInt( PREF_ALARM_TIME_HOUR, 0 );
+            alarm.mMinute = prefs.getInt( PREF_ALARM_TIME_MINUTE, 0 );
+            alarm.mEnabled = prefs.getBoolean( PREF_ALARM_ENABLED, false );
+            alarm.mRepeats = prefs.getBoolean( PREF_ALARM_REPEATS, false );
+            alarm.mDays = prefs.getInt( PREF_ALARM_DAYS, 0 );
             alarm.mId = prefs.getString( PREF_ALARM_ID, alarm.mId );
             return alarm;
         }
         else
         {
-            return Alarm.getInstance();
-        }
-    }
-
-    private void updateToFuture()
-    {
-        final Calendar now = Calendar.getInstance();
-        Time.set( now.get( Calendar.YEAR ), now.get( Calendar.MONTH ), now.get( Calendar.DATE ) );
-        if( Time.before( now ) )
-        {
-            Time.add( Calendar.DATE, 1 );
+            return new Alarm();
         }
     }
 
@@ -103,8 +167,11 @@ public final class Alarm
         Alarm.getSharedPreferences( context )
                 .edit()
                 .putBoolean( PREF_HAS_ALARM, true )
-                .putLong( PREF_ALARM_TIME, Time.getTimeInMillis() )
-                .putBoolean( PREF_ALARM_ENABLED, Enabled )
+                .putInt( PREF_ALARM_TIME_HOUR, mHour )
+                .putInt( PREF_ALARM_TIME_MINUTE, mMinute )
+                .putBoolean( PREF_ALARM_ENABLED, mEnabled )
+                .putBoolean( PREF_ALARM_REPEATS, mRepeats )
+                .putInt( PREF_ALARM_DAYS, mDays )
                 .putString( PREF_ALARM_ID, mId )
                 .commit();
     }
@@ -125,27 +192,36 @@ public final class Alarm
 
     public void activateAlarm( Context context )
     {
-        if( !Enabled )
+        if( !mEnabled )
         {
-            Enabled = true;
+            mEnabled = true;
         }
-        this.updateToFuture();
         this.saveAlarm( context );
 
         final PendingIntent alarmPendingIntent = createAlarmPendingIntent( context );
         final PendingIntent showPendingIntent = createShowPendingIntent( context );
 
-        final AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo( Time.getTimeInMillis(), showPendingIntent );
+        final AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo( getNextAlarmTime().getTimeInMillis(), showPendingIntent );
 
         final AlarmManager manager = (AlarmManager)context.getSystemService( Context.ALARM_SERVICE );
         manager.setAlarmClock( info, alarmPendingIntent );
     }
 
+    public void dismissAlarm( Context context )
+    {
+        this.cancelAlarm( context );
+
+        if( this.getRepeats() )
+        {
+            this.activateAlarm( context );
+        }
+    }
+
     public void cancelAlarm( Context context )
     {
-        if( Enabled )
+        if( mEnabled )
         {
-            Enabled = false;
+            mEnabled = false;
         }
         this.saveAlarm( context );
 

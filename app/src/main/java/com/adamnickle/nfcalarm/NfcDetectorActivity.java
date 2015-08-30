@@ -9,6 +9,7 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -21,9 +22,15 @@ public class NfcDetectorActivity extends Activity
 
         if( AlarmService.isAnnoying() )
         {
-            if( matchesAlarmId() )
+            final Alarm alarm = Alarm.getAlarm( this );
+
+            if( matchesAlarmId( alarm ) )
             {
-                AlarmService.stopAlarm( this );
+                alarm.dismissAlarm( this );
+                if( alarm.isEnabled() )
+                {
+                    Toast.makeText( this, alarm.getAlarmActivationString(), Toast.LENGTH_SHORT ).show();
+                }
             }
         }
         else
@@ -35,10 +42,8 @@ public class NfcDetectorActivity extends Activity
         finish();
     }
 
-    private boolean matchesAlarmId()
+    private boolean matchesAlarmId( final Alarm alarm )
     {
-        final Alarm alarm = Alarm.getAlarm( this );
-
         final Tag tag = getIntent().getParcelableExtra( NfcAdapter.EXTRA_TAG );
         if( tag == null )
         {
@@ -60,13 +65,14 @@ public class NfcDetectorActivity extends Activity
                 return false;
             }
 
+            final String alarmID = alarm.getID();
             for( NdefRecord record : message.getRecords() )
             {
                 final String mimeType = record.toMimeType();
                 if( mimeType != null && mimeType.equals( getString( R.string.mime_type ) ) )
                 {
                     final String id = new String( record.getPayload(), "UTF-8" );
-                    if( alarm.getID().equals( id ) )
+                    if( alarmID.equals( id ) )
                     {
                         return true;
                     }
