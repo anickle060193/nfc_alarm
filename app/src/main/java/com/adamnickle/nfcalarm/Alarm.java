@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.provider.Settings;
 import android.text.format.DateUtils;
 
 import java.util.Calendar;
@@ -25,6 +27,7 @@ public final class Alarm
     private static final String PREF_ALARM_ID = "pref_alarm_id";
     private static final String PREF_ALARM_REPEATS = "pref_alarm_repeats";
     private static final String PREF_ALARM_DAYS = "pref_alarm_days";
+    private static final String PREF_ALARM_SOUND = "pref_alarm_sound";
 
     public static final int SUNDAY = 0;
     public static final int MONDAY = 1;
@@ -42,6 +45,7 @@ public final class Alarm
     private boolean mRepeats;
     private int mDays;
     private String mId;
+    private Uri mAlarmSound;
 
     private Alarm()
     {
@@ -50,6 +54,7 @@ public final class Alarm
         this.mEnabled = false;
         this.mDays = 0;
         this.mId = UUID.randomUUID().toString();
+        this.mAlarmSound = Settings.System.DEFAULT_ALARM_ALERT_URI;
     }
 
     public void setTime( int hourOfDay, int minute )
@@ -132,8 +137,18 @@ public final class Alarm
     {
         final long now = System.currentTimeMillis();
         final long alarm = getNextAlarmTime().getTimeInMillis();
-        final String alarmString = DateUtils.getRelativeTimeSpanString( alarm, now, DateUtils.SECOND_IN_MILLIS ).toString();
+        final String alarmString = DateUtils.getRelativeTimeSpanString( alarm, now, 0 ).toString();
         return "Alarm to sound " + alarmString;
+    }
+
+    public void setAlarmSound( Uri uri )
+    {
+        mAlarmSound = uri;
+    }
+
+    public Uri getAlarmSound()
+    {
+        return mAlarmSound;
     }
 
     private static SharedPreferences getSharedPreferences( Context context )
@@ -154,6 +169,11 @@ public final class Alarm
             alarm.mRepeats = prefs.getBoolean( PREF_ALARM_REPEATS, false );
             alarm.mDays = prefs.getInt( PREF_ALARM_DAYS, 0 );
             alarm.mId = prefs.getString( PREF_ALARM_ID, alarm.mId );
+            final String uriString = prefs.getString( PREF_ALARM_SOUND, null );
+            if( uriString != null )
+            {
+                alarm.mAlarmSound = Uri.parse( uriString );
+            }
             return alarm;
         }
         else
@@ -173,6 +193,7 @@ public final class Alarm
                 .putBoolean( PREF_ALARM_REPEATS, mRepeats )
                 .putInt( PREF_ALARM_DAYS, mDays )
                 .putString( PREF_ALARM_ID, mId )
+                .putString( PREF_ALARM_SOUND, mAlarmSound.toString() )
                 .commit();
     }
 

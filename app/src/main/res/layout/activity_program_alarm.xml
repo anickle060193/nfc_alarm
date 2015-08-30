@@ -20,20 +20,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="Current:"/>
-
-        <include
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/currentTime"
-            layout="@layout/clock"
-            android:layout_marginTop="-8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="@dimen/alarm_programming_title_text_size"
             android:text="Alarm:"/>
 
         <include
@@ -41,13 +28,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/alarmTime"
             layout="@layout/clock"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="-8dp" />
 
         <CheckBox
             android:id="@+id/repeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="@dimen/alarm_programming_title_text_size"
             android:text="Repeat"/>
 
         <LinearLayout
@@ -55,48 +43,56 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
 
             <CheckBox
                 android:id="@+id/sunday"
                 style="@style/DayCheckbox"
                 android:layout_weight="1"
+                android:textSize="@dimen/alarm_programming_subtitle_text_size"
                 android:text="S"/>
 
             <CheckBox
                 android:id="@+id/monday"
                 style="@style/DayCheckbox"
                 android:layout_weight="1"
+                android:textSize="@dimen/alarm_programming_subtitle_text_size"
                 android:text="M"/>
 
             <CheckBox
                 android:id="@+id/tuesday"
                 style="@style/DayCheckbox"
                 android:layout_weight="1"
+                android:textSize="@dimen/alarm_programming_subtitle_text_size"
                 android:text="T"/>
 
             <CheckBox
                 android:id="@+id/wednesday"
                 style="@style/DayCheckbox"
                 android:layout_weight="1"
+                android:textSize="@dimen/alarm_programming_subtitle_text_size"
                 android:text="W"/>
 
             <CheckBox
                 android:id="@+id/thursday"
                 style="@style/DayCheckbox"
                 android:layout_weight="1"
+                android:textSize="@dimen/alarm_programming_subtitle_text_size"
                 android:text="T"/>
 
             <CheckBox
                 android:id="@+id/friday"
                 style="@style/DayCheckbox"
                 android:layout_weight="1"
+                android:textSize="@dimen/alarm_programming_subtitle_text_size"
                 android:text="F"/>
 
             <CheckBox
                 android:id="@+id/saturday"
                 style="@style/DayCheckbox"
                 android:layout_weight="1"
+                android:textSize="@dimen/alarm_programming_subtitle_text_size"
                 android:text="S"/>
 
         </LinearLayout>
@@ -104,8 +100,24 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_marginTop="8dp"
+            android:textSize="@dimen/alarm_programming_title_text_size"
+            android:layout_marginTop="16dp"
+            android:text="Alarm Sound:"/>
+
+        <Button
+            android:id="@+id/alarmSound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="@dimen/alarm_programming_subtitle_text_size"
+            android:text="None"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/alarm_programming_title_text_size"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
             android:text="NFC Tag Programming:"/>
 
@@ -113,8 +125,9 @@
             android:id="@+id/tagProgrammingStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_marginStart="8dp"
+            android:textSize="@dimen/alarm_programming_subtitle_text_size"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:text="Scanning for NFC tag..."/>
 
     </LinearLayout>
@@ -130,6 +143,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             style="@android:style/Widget.Material.Light.Button.Borderless.Colored"
+            android:textSize="@dimen/alarm_programming_title_text_size"
             android:text="Cancel"/>
 
         <Button
@@ -138,6 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             style="@android:style/Widget.Material.Light.Button.Borderless.Colored"
+            android:textSize="@dimen/alarm_programming_title_text_size"
             android:enabled="false"
             android:text="Done"/>
 

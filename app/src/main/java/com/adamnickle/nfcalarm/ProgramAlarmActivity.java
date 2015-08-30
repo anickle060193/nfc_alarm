@@ -7,6 +7,9 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -14,7 +17,7 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -31,8 +34,8 @@ import butterknife.OnClick;
 public class ProgramAlarmActivity extends Activity
 {
     private static final int REQUEST_NDEF_DISCOVERED = 1001;
+    private static final int REQUEST_PICK_ALARM_SOUND = 1002;
 
-    @Bind( R.id.currentTime ) View mCurrentClock;
     @Bind( R.id.alarmTime ) View mAlarmClock;
     @Bind( R.id.tagProgrammingStatus ) TextView mTagProgrammingStatus;
     @Bind( R.id.repeat ) CheckBox mRepeat;
@@ -40,6 +43,7 @@ public class ProgramAlarmActivity extends Activity
     @Bind( { R.id.sunday, R.id.monday, R.id.tuesday, R.id.wednesday, R.id.thursday, R.id.friday, R.id.saturday } )
     CheckBox[] mDayCheckboxes;
     @Bind( R.id.done ) Button mDone;
+    @Bind( R.id.alarmSound) Button mAlarmSound;
 
     private Alarm mNewAlarm;
 
@@ -61,17 +65,6 @@ public class ProgramAlarmActivity extends Activity
         mNewAlarm = Alarm.getAlarm( this );
         mTagProgrammed = false;
 
-        final Handler handler = new Handler();
-        handler.post( new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                updateCurrentTime();
-                handler.postDelayed( this, 100 );
-            }
-        } );
-
         for( int i = 0; i < mDayCheckboxes.length; i++ )
         {
             mDayCheckboxes[ i ].setTag( i );
@@ -79,6 +72,7 @@ public class ProgramAlarmActivity extends Activity
 
         updateAlarmTime();
         updateDaysContainer();
+        updateAlarmSound();
 
         final Intent nfcIntent = new Intent( this, ProgramAlarmActivity.class )
                 .addFlags( Intent.FLAG_ACTIVITY_SINGLE_TOP );
@@ -117,6 +111,20 @@ public class ProgramAlarmActivity extends Activity
     }
 
     @Override
+    protected void onActivityResult( int requestCode, int resultCode, Intent data )
+    {
+        if( requestCode == REQUEST_PICK_ALARM_SOUND )
+        {
+            if( resultCode == Activity.RESULT_OK )
+            {
+                final Uri uri = data.getParcelableExtra( RingtoneManager.EXTRA_RINGTONE_PICKED_URI );
+                mNewAlarm.setAlarmSound( uri );
+                updateAlarmSound();
+            }
+        }
+    }
+
+    @Override
     public void onNewIntent( Intent intent )
     {
         if( intent != null )
@@ -138,9 +146,10 @@ public class ProgramAlarmActivity extends Activity
         }
     }
 
-    private void updateCurrentTime()
+    private void updateAlarmSound()
     {
-        ClockViewHelper.setTime( mCurrentClock, Calendar.getInstance() );
+        final Ringtone alarmSound = RingtoneManager.getRingtone( this, mNewAlarm.getAlarmSound() );
+        mAlarmSound.setText( alarmSound.getTitle( this ) );
     }
 
     private void updateAlarmTime()
@@ -212,6 +221,18 @@ public class ProgramAlarmActivity extends Activity
         final boolean checked = dayCheckbox.isChecked();
         mNewAlarm.setDay( (int)dayCheckbox.getTag(), checked );
         updateDaysContainer();
+    }
+
+    @OnClick( R.id.alarmSound)
+    void onAlarmSoundClick()
+    {
+        final Intent intent = new Intent( RingtoneManager.ACTION_RINGTONE_PICKER )
+                .putExtra( RingtoneManager.EXTRA_RINGTONE_TITLE, "Select sound for alarm:" )
+                .putExtra( RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true )
+                .putExtra( RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true )
+                .putExtra( RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM )
+                .putExtra( RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Parcelable)null );
+        startActivityForResult( intent, REQUEST_PICK_ALARM_SOUND );
     }
 
     private boolean programTag( final Tag tag )

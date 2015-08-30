@@ -64,8 +64,12 @@ public class AlarmService extends Service
         final NotificationManager manager = (NotificationManager)getSystemService( Context.NOTIFICATION_SERVICE );
         manager.notify( ALARM_NOTIFICATION_ID, notification );
 
-        final Uri uri = RingtoneManager.getActualDefaultRingtoneUri( this, RingtoneManager.TYPE_ALARM );
-        mRingtone = RingtoneManager.getRingtone( this, uri );
+        mRingtone = RingtoneManager.getRingtone( this, mAlarm.getAlarmSound() );
+        if( mRingtone == null )
+        {
+            final Uri uri = RingtoneManager.getActualDefaultRingtoneUri( this, RingtoneManager.TYPE_ALARM );
+            mRingtone = RingtoneManager.getRingtone( this, uri );
+        }
         final AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setUsage( AudioAttributes.USAGE_ALARM )
                 .build();
