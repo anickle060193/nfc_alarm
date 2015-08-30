@@ -3,6 +3,7 @@ package com.adamnickle.nfcalarm;
 import android.view.View;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -10,15 +11,16 @@ import java.util.Locale;
 /**
  * Created by Adam on 8/28/2015.
  */
-public final class ClockViewHelper
+public final class DateTimeViewHelper
 {
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat( "h:mm", Locale.getDefault() );
+    private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance( DateFormat.LONG, Locale.getDefault() );
 
-    private ClockViewHelper() { }
+    private DateTimeViewHelper() { }
 
     public static void setTime( View clock, Calendar time )
     {
-        if( clock == null )
+        if( clock == null || TIME_FORMAT == null )
         {
             return;
         }
@@ -30,7 +32,8 @@ public final class ClockViewHelper
         {
             timeView.setText( TIME_FORMAT.format( time.getTime() ) );
 
-            if( time.get( Calendar.AM_PM ) == Calendar.AM )
+            final int amPm = time.get( Calendar.AM_PM );
+            if( amPm == Calendar.AM )
             {
                 amView.setVisibility( View.VISIBLE );
                 pmView.setVisibility( View.INVISIBLE );
@@ -47,5 +50,10 @@ public final class ClockViewHelper
             amView.setVisibility( View.GONE );
             pmView.setVisibility( View.GONE );
         }
+    }
+
+    public static void setDate( TextView view, Calendar date )
+    {
+        view.setText( DATE_FORMAT.format( date.getTime() ) );
     }
 }

@@ -9,7 +9,6 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -29,7 +28,7 @@ public class NfcDetectorActivity extends Activity
                 alarm.dismissAlarm( this );
                 if( alarm.isEnabled() )
                 {
-                    Toast.makeText( this, alarm.getAlarmActivationString(), Toast.LENGTH_SHORT ).show();
+                    NfcAlarm.toast( alarm.getAlarmActivationString() );
                 }
             }
         }

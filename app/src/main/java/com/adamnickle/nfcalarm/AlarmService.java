@@ -13,12 +13,22 @@ import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.v7.app.NotificationCompat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AlarmService extends Service
 {
+    public interface OnAnnoyingListener
+    {
+        void onAnnoyingStart();
+        void onAnnoyingStop();
+    }
+
     private static final int ALARM_NOTIFICATION_ID = 1001;
     private static final long[] VIBRATE_PATTERN = new long[]{ 100, 200, 100, 200, 100, 50, 100, 50, 100, 200, 100, 200, 100, 50, 100, 50, 100, 50 };
 
     private static boolean mIsAnnoying;
+    private static List<OnAnnoyingListener> mListeners = new ArrayList<>();
 
     private Alarm mAlarm;
     private Ringtone mRingtone;
@@ -52,10 +62,20 @@ public class AlarmService extends Service
         return mIsAnnoying;
     }
 
+    public static void addOnAnnoyingListener( OnAnnoyingListener listener )
+    {
+        mListeners.add( listener );
+    }
+
+    public static void removeOnAnnoyingListener( OnAnnoyingListener listener )
+    {
+        mListeners.remove( listener );
+    }
+
     private void startAnnoying()
     {
         final Notification notification = new NotificationCompat.Builder( getApplicationContext() )
-                .setSmallIcon( R.mipmap.ic_launcher )
+                .setSmallIcon( R.drawable.ic_notification )
                 .setContentTitle( "NFC Alarm" )
                 .setContentText( "Scan programmed NFC tag to stop alarm." )
                 .setOngoing( true )
@@ -80,6 +100,10 @@ public class AlarmService extends Service
         mVibrator.vibrate( VIBRATE_PATTERN, 0, audioAttributes );
 
         mIsAnnoying = true;
+        for( OnAnnoyingListener listener : mListeners )
+        {
+            listener.onAnnoyingStart();
+        }
     }
 
     private void stopAnnoying()
@@ -98,6 +122,10 @@ public class AlarmService extends Service
         }
 
         mIsAnnoying = false;
+        for( OnAnnoyingListener listener : mListeners )
+        {
+            listener.onAnnoyingStop();
+        }
     }
 
     private static Intent createAlarmIntent( Context context )

@@ -154,7 +154,7 @@ public class ProgramAlarmActivity extends Activity
 
     private void updateAlarmTime()
     {
-        ClockViewHelper.setTime( mAlarmClock, mNewAlarm.getNextAlarmTime() );
+        DateTimeViewHelper.setTime( mAlarmClock, mNewAlarm.getNextAlarmTime() );
     }
 
     private void updateDaysContainer()

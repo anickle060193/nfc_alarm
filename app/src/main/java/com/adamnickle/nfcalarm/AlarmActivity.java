@@ -3,27 +3,27 @@ package com.adamnickle.nfcalarm;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
+
+import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AlarmActivity extends Activity
+public class AlarmActivity extends Activity implements AlarmService.OnAnnoyingListener
 {
     private static final int REQUEST_CREATE_ALARM = 1001;
 
     @Bind( R.id.alarmClock ) View mAlarmClock;
+    @Bind( R.id.alarmDate ) TextView mAlarmDate;
     @Bind( R.id.setAlarm) Button mSetAlarm;
     @Bind( R.id.createAlarm) Button mCreateAlarm;
     @Bind( R.id.clearAlarm ) Button mClearAlarm;
 
     private Alarm mAlarm;
-
-    private boolean mIsVisible;
 
     @Override
     public void onCreate( Bundle savedInstanceState )
@@ -43,23 +43,7 @@ public class AlarmActivity extends Activity
         super.onResume();
 
         updateActions();
-
-        mIsVisible = true;
-
-        final Handler handler = new Handler();
-        handler.post( new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                updateActions();
-
-                if( mIsVisible )
-                {
-                    handler.postDelayed( this, 100 );
-                }
-            }
-        } );
+        AlarmService.addOnAnnoyingListener( this );
     }
 
     @Override
@@ -67,7 +51,19 @@ public class AlarmActivity extends Activity
     {
         super.onPause();
 
-        mIsVisible = false;
+        AlarmService.removeOnAnnoyingListener( this );
+    }
+
+    @Override
+    public void onAnnoyingStart()
+    {
+        updateActions();
+    }
+
+    @Override
+    public void onAnnoyingStop()
+    {
+        updateActions();
     }
 
     @Override
@@ -114,12 +110,14 @@ public class AlarmActivity extends Activity
 
     private void onAlarmSet()
     {
-        Toast.makeText( this, mAlarm.getAlarmActivationString(), Toast.LENGTH_SHORT ).show();
+        NfcAlarm.toast( mAlarm.getAlarmActivationString() );
     }
 
     private void updateAlarmTime()
     {
-        ClockViewHelper.setTime( mAlarmClock, mAlarm.getNextAlarmTime() );
+        final Calendar alarmTime = mAlarm.getNextAlarmTime();
+        DateTimeViewHelper.setTime( mAlarmClock, alarmTime );
+        DateTimeViewHelper.setDate( mAlarmDate, alarmTime );
     }
 
     private void updateActions()
